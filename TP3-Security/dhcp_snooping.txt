@@ -1,0 +1,8 @@
+conf t
+ip dhcp snooping
+ip dhcp snooping vlan 1
+
+interface Ethernet0/0
+ip dhcp snooping trust
+
+end

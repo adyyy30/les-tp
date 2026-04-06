@@ -1,0 +1,12 @@
+conf t
+
+interface Ethernet0/1
+ip verify source
+
+ip device tracking maximum 2
+
+interface Ethernet0/1
+switchport port-security maximum 2
+ip verify source port-security
+
+end
